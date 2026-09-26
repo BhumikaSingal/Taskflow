@@ -8,6 +8,10 @@ __pycache__/
 node_modules/
 .next/
 out/
+backend/venv/
+backend/venv/
+backend/.venv/
+
 
 # Environment
 .env

@@ -1,7 +1,7 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 let csrfToken: string | null = null;
 
-async function ensureCsrf() {
+async function ensureCsrf(): Promise<string | null> {
   if (csrfToken) return csrfToken;
   const response = await fetch(`${API_URL}/api/csrf`, {
     credentials: "include",
@@ -20,7 +20,12 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   };
 
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method) && !path.startsWith("/auth/")) {
-    headers["X-CSRF-Token"] = await ensureCsrf();
+    const token = await ensureCsrf();
+    if (token) {
+      headers["X-CSRF-Token"] = token;
+    } else {
+      headers["X-CSRF-Token"] = ""; // Fallback value if null
+    }
   }
 
   const response = await fetch(`${API_URL}${path}`, {

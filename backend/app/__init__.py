@@ -14,7 +14,9 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from supabase import create_client
 
-load_dotenv()
+load_dotenv(override=False)
+logging.basicConfig(level=logging.INFO)
+
 logging.basicConfig(level=logging.INFO)
 
 oauth = OAuth()

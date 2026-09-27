@@ -19,3 +19,7 @@ backend/.venv/
 
 # OS
 .DS_Store
+backend/venv/
+.venv/
+backend/venv/
+.venv/

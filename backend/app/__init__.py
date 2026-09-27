@@ -118,6 +118,13 @@ def create_app():
         if not csrf_valid():
             return jsonify({"error": "Invalid CSRF token"}), 403
 
+    @app.get("/")
+    def index():
+        return jsonify({
+            "status": "healthy",
+            "message": "TaskFlow Backend API is running successfully!"
+        })
+
     @app.get("/health")
     def health():
         return jsonify({"status": "ok"})

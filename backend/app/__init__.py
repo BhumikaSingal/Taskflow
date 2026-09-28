@@ -48,20 +48,25 @@ def create_app():
     global supabase
 
     app = Flask(__name__)
-    production = os.environ.get("FLASK_ENV", "development").lower() == "production"
-    secure_cookies = os.environ.get("SESSION_COOKIE_SECURE", str(production)).lower() == "true"
+    production = True
+    secure_cookies = True
+
 
     secret_key = os.environ.get("SECRET_KEY")
     if production and (not secret_key or len(secret_key) < 32):
         raise RuntimeError("SECRET_KEY must be at least 32 characters in production")
 
     app.config.update(
-        SECRET_KEY=secret_key or "dev-only-change-me",
-        MAX_CONTENT_LENGTH=1 * 1024 * 1024,
-        SESSION_COOKIE_HTTPONLY=True,
-        SESSION_COOKIE_SECURE=secure_cookies,
-        SESSION_COOKIE_SAMESITE="None" if secure_cookies else "Lax",
-    )
+    SECRET_KEY=secret_key,
+    MAX_CONTENT_LENGTH=1 * 1024 * 1024,
+
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="None",
+
+    SESSION_COOKIE_PATH="/",
+)
+
 
     frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000").rstrip("/")
     CORS(app, origins=[frontend_url], supports_credentials=True)

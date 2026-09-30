@@ -144,11 +144,10 @@ def create_app():
         token = secrets.token_urlsafe(32)
         response = make_response(jsonify({"csrf_token": token}))
         response.set_cookie(
-            CSRF_COOKIE,
-            'auth_token',
+             CSRF_COOKIE,
              value=token,
-             secure=True,        # 👈 Required over HTTPS
-             samesite='None',    # 👈 Required for cross-site cross-origin
+             secure=True,        
+             samesite='None',    
              httponly=True
         )
         return response

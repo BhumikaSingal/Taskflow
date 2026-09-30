@@ -96,11 +96,23 @@ def create_app():
         return response
 
     def current_user():
-        user_id = session.get("user_id")
-        if not user_id:
-            return None
-        result = supabase.table("users").select("*").eq("id", user_id).maybe_single().execute()
-        return result.data
+            logging.info("SESSION COOKIE PRESENT: %s", "session" in request.cookies)
+            logging.info("SESSION: %s", dict(session))
+
+            user_id = session.get("user_id")
+
+            if not user_id:
+                logging.warning("No user_id in Flask session")
+                return None
+
+            result = supabase.table("users").select("*").eq(
+                "id", user_id
+            ).maybe_single().execute()
+
+            logging.info("USER LOOKUP: %s", bool(result.data))
+
+            return result.data
+
 
     def login_required(fn):
         @wraps(fn)
@@ -123,13 +135,6 @@ def create_app():
         if not csrf_valid():
             return jsonify({"error": "Invalid CSRF token"}), 403
 
-    @app.get("/")
-    def index():
-        return jsonify({
-            "status": "healthy",
-            "message": "TaskFlow Backend API is running successfully!"
-        })
-
     @app.get("/health")
     def health():
         return jsonify({"status": "ok"})
@@ -140,11 +145,11 @@ def create_app():
         response = make_response(jsonify({"csrf_token": token}))
         response.set_cookie(
             CSRF_COOKIE,
-            token,
-            httponly=False,
-            secure=secure_cookies,
-            samesite="None" if secure_cookies else "Lax",
-            max_age=3600,
+            'auth_token',
+             value=token,
+             secure=True,        # 👈 Required over HTTPS
+             samesite='None',    # 👈 Required for cross-site cross-origin
+             httponly=True
         )
         return response
 

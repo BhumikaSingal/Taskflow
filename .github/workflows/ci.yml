@@ -23,10 +23,13 @@ jobs:
     defaults:
       run:
         working-directory: frontend
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+        steps:
+             - name: Checkout Repository
+               uses: actions/checkout@eef6142ac128cdb2d68503c81d3fac8c477f1648 
+             - name: Setup Node.js
+               uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 
+             - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm install
-      - run: npm run build
+              - run: npm install
+              - run: npm run build
